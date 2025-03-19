@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mrmarket-combined
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your_jwt_secret_here
+      - JWT_EXPIRATION=1d
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin_password
+      - CORS_ORIGIN=*
+    depends_on:
+      - redis
+    volumes:
+      - ./:/app
+      - /app/node_modules
+
+  redis:
+    image: redis:alpine
+    container_name: mrmarket-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
